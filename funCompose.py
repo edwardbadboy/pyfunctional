@@ -1,7 +1,7 @@
 from functools import partial
 from operator import pow, gt, add, mul
 from itertools import count as icount
-from itertools import imap, ifilter, takewhile
+from itertools import imap, ifilter, takewhile, izip
 
 
 class _compFun(partial):
@@ -61,8 +61,40 @@ for i in R(1):
     print i
 print
 
+# a bit more sophisticated currying example
+R = (fcp() +
+     $takewhile($gt(1000)) + $ifilter(isOdd) +
+     $imap($(flip(pow))(2)) + icount)
+for i in R(1):
+    print i
+print
+
 # generator alternative
 R = (pow(i, 2) for i in icount(1) if pow(i, 2) % 2 != 0 and pow(i, 2) < 1000)
 # but it won't stop
 # for i in R:
     # print i
+
+
+def unPack(f):
+    return lambda args: f(*args)
+
+
+def dotProduct(addOp, mulOp, *vectors):
+    vec1, vec2 = vectors
+    F = fcp() + $reduce(addOp) + $imap(unPack(mulOp)) + izip
+    return F(vec1, vec2)
+
+
+print dotProduct(add, mul, [1, 2, 3], [4, 5, 6])
+print 1 * 4 + 2 * 5 + 3 * 6
+print
+
+
+def f3arg(a, b, c):
+    return a + b + c
+
+
+F = $($f3arg(1))(2)
+print F(3)
+print
