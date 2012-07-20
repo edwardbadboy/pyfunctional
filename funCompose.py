@@ -26,11 +26,17 @@ def f3(x):
     return x ** 2
 
 
+# function composition example
 print f3(f2(f1(3)))
-print (fcp() + f3 + f2 + f1)(3)
+F = (fcp() + f3 + f2 + f1)
+print F(3)
+print
+# the result of the above two computation must be the same
 
+# function composition and currying example
 F = fcp() + $mul(2) + $add(1)
 print F(2)
+print
 
 
 def isOdd(x):
@@ -48,17 +54,15 @@ def flip(f):
     return lambda a, b: f(b, a)
 
 
+# sophisticated currying example
 pow2 = flip(pow)
-
-R = fcp() + $takewhile($gt(100)) + $ifilter(isOdd) + $imap($pow2(2)) + icount
-
-# can stop
+R = fcp() + $takewhile($gt(1000)) + $ifilter(isOdd) + $imap($pow2(2)) + icount
 for i in R(1):
     print i
+print
 
-
-R = (pow(i, 2) for i in icount(1) if pow(i, 2) % 2 != 0 and pow(i, 2) < 100)
-
-# won't stop
-for i in R:
-    print i
+# generator alternative
+R = (pow(i, 2) for i in icount(1) if pow(i, 2) % 2 != 0 and pow(i, 2) < 1000)
+# but it won't stop
+# for i in R:
+    # print i
